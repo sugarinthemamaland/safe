@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>安心出行</title>
+<head>
+<link rel="icon" href="image/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#12B188" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="image/icon-192x192.png" />
+<link rel="manifest" href="manifest.json" />
+	
+<style>
+	body {
+		margin: 0;
+		padding:0;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		background-color: #12B188;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		position: fixed;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+		text-shadow: rgb(0 0 0 / 80%) 0px 1px 2px;
+		
+	}
+	.scanLabel {
+		height: 20px;
+		top: 14px;
+		left: 16px;
+		position: absolute;
+	}
+	.content{
+		text-align:center;
+		width:100%;
+		margin: 0% auto;
+	}
+	
+	input[type="text"]{
+		text-align:center;
+		width: 80%;
+		padding: 12px 20px;
+		margin: 0 auto;
+		box-sizing: border-box;
+		border: none;
+		background-color: #3CBC8D;
+		color: white;
+		font-size:30px;
+	}
+	button{
+		display: block;
+		margin: auto;
+		margin-bottom: 16px;
+		margin-top: 10%;
+		font-size: 24px;
+		padding: 10px 100px;
+		border-radius: 48px;
+		background-color: #fed426;
+		box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 50%);
+		border: 0;
+		outline: none;
+	}
+	::placeholder {
+		color: white;
+		opacity: 1; /* Firefox */
+	}
+	
+	#menuInput {
+		display:none;
+		position:relative;
+		z-index:2100;
+		top: 78vh;
+	}
+	
+	.scanHeader{
+		width: 100%;
+		position: absolute;
+		z-index: 100000;
+		color: rgb(255, 255, 255);
+		background-color: rgb(18, 177, 136);
+		text-align: center;
+		line-height: 48px;
+	}
+	.overlay{
+		margin:0 ;
+		background-image: url(image/qrOverlay.185cc3ea.svg);
+		width:100%;
+		height: 100%;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: absolute;
+		z-index: 1000;
+	}
+	#scanner{
+		min-width: 100%;
+		min-height: 100%;
+		width: auto;
+		height: auto;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index:1;	
+	}
+	.hiddenInput {
+		position: absolute;
+		z-index: 51;
+		bottom: 25%;
+		width: 100%;
+		text-align: center;
+		color: rgb(255, 255, 255);
+		font-size: 16px;
+		z-index:2000;
+	}
+
+	
+</style>	
+
+</head>
+<script type="text/javascript" src="instascan.js"></script>
+<script type="text/javascript" src="base64.js"></script>
+<script>
+
+function showOverlay() {
+    // Hide video, show poster
+    var overlay = document.getElementById("overlay");
+    overlay.style.visibility = "visible";
+    var videoContainer = document.getElementById("scanner");
+    videoContainer.style.position = "absolute";
+    videoContainer.style.top = "-2000px";
+    overlayShown = true;
+}
+
+function setCookie(cname,cvalue,exdays){
+	var d = new Date();
+	d.setTime(d.getTime()+(exdays*1000));
+	var expires = "expires="+d.toGMTString();
+	if (cvalue!="" || cvalue != NULL){
+		document.cookie = cname+"="+cvalue+"; "+expires;
+		var d = new Date();
+		var timeRecord = d.getFullYear() + "-" + (d.getMonth() +1 )+"-"+ d.getDate() + " " + d.getHours() +":"+ (d.getMinutes()<10?'0':'') + d.getMinutes();
+		document.cookie = "checkInTime="+timeRecord+"; "+expires;
+		window.location.href = "confirm.html";
+	}
+}
+function getCookie(cname){
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+	}
+	return "";
+}
+function checkCookie(){
+	var user=getCookie("placeName");
+	if (user!=""){		
+		window.location.href = "confirm.html";
+	}
+	/*else {
+		user = prompt("name:","");
+  		if (user!="" && user!=null){
+    		setCookie("placeName",user,30);
+    	}
+	}*/
+}
+function showmenuInput(){
+	document.getElementById("menuInput").style.display = "block";
+}
+</script>
+</head>
+	
+<body onload="checkCookie();">
+<div class="content">
+	<div class="scanHeader">
+		<a href="index.html">
+			<img src="image/back.7bf7a56f.svg" class="sc-hBEYos scanLabel">
+		</a>
+		掃瞄二維碼
+	</div>	
+	<div class="overlay"></div>
+	<video playsinline id="scanner" width="100%" class="video-back"></video>	
+	<div class="hiddenInput" onclick="showmenuInput()">掃瞄二維碼</div>
+	<script type="text/javascript">
+		let scanner = new Instascan.Scanner({
+		  continuous: true, // 連續掃描
+		  video: document.getElementById('scanner'), // 預覽
+		  scanPeriod: 1,
+		  mirror:false,
+		  facingMode: {
+			exact: "environment"
+		  }
+		});
+		scanner.addListener('scan', function (content) {
+
+		  console.log(content);
+		  getConfirmation();
+
+		  function getConfirmation() {
+			//var retVal = alert("掃描結果：" + content); // 掃描結果顯示
+			var retVal = content;		
+			var checkHKEN = retVal.substring(0,5); // 安心前綴	
+			if(checkHKEN == "HKEN:"){
+				var hkenPlace = base64.decode(retVal.substring(14,retVal.length)).split(',');//decode base64
+				var realPlace; //"nameZh":"良田體育館"
+				for(var i=0; i<hkenPlace.length; i++) {		
+					if (hkenPlace[i].indexOf("nameZh")==1) { 
+						realPlace = hkenPlace[i];
+					}
+				}				
+				var sortName = realPlace.split(':');
+				var newName = sortName[1].replace(/\"/g,'');
+				
+				setCookie('placeName',base64.encode(newName),3600);
+				//alert("掃描結果：" + newName);			
+			}
+				
+			/*if (retVal == true) {			
+				var checkurl = /^((https?|http?|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/; // 檢查是否為網址
+				if (checkurl.test(content)) {
+					//window.open(content, "_self"); // 開啟網址
+				  }
+				  return true;
+			} else {
+				return false;
+			}*/
+			//http://ykyle.com/qr
+			}
+		});
+		Instascan.Camera.getCameras().then(function (cameras) {
+			if (cameras.length > 0) {
+			  scanner.start(cameras[1]);
+			} else {
+			  console.error('No cameras found.');
+			}
+		  }).catch(function (e) {
+			console.error(e);
+		  });
+	</script>
+	<div id="menuInput">
+		<input type="text" id="enterPlace" placeholder="輸入地方"> <br>
+		<button onclick="setCookie('placeName',base64.encode(document.getElementById('enterPlace').value),3600)">進入</button>
+	</div>
+</div>
+</body>
+</html>

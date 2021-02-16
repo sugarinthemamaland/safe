@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>安心出行</title>
+
+<head>
+<link rel="icon" href="image/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#12B188" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="image/icon-192x192.png" />
+<link rel="manifest" href="manifest.json" />
+<style>
+		html, body {
+			margin: 0; 
+			height: 100%; 
+			overflow: hidden;
+			position: fixed;			
+		}
+		* {
+			margin: 0;
+			padding: 0;
+			background-color: #12B188;
+		}
+		
+		body {
+			margin: 0px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+			-webkit-font-smoothing: antialiased;
+			width: 100%;
+			height: 100%;
+			text-shadow: rgb(0 0 0 / 80%) 0px 1px 2px;
+		}
+		
+		.content {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			-webkit-box-pack: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+		
+		.youHvEnter {
+			color: rgb(255, 255, 255);
+			text-align: center;
+			font-size: 18px;
+			margin-top: 90px;
+			}
+	
+		.cookiePlace {
+			text-align: center;
+			font-size: 33px;
+			background-color: transparent;
+			border: 0px;
+			outline: none;
+			margin: 5px 0px;
+			color: rgb(254, 212, 38);
+		}
+		.cookieDate {
+			color: rgb(255, 255, 255);
+			font-size: 18px;
+			text-align: center;
+		}
+
+		.ticktick {
+			margin: 65px auto auto;
+			width: 32%;
+		}
+		.changeTick {
+			width: 100%;
+			text-align: left;
+			padding-left: 24px;
+			line-height: 32px;
+		}
+		.textdis {
+			height: 32px;
+			display: inline-block;
+			vertical-align: top;
+			margin-right: 8px;
+		}
+		.changestatus {
+			flex-shrink: 0;
+			padding-right: 24px;
+			line-height: 32px;
+		}
+		.subfooter {
+			margin-bottom: 16px;
+			width: 100%;
+			display: flex;
+		}
+		.footerDiv {
+			width: 100%;
+			position: absolute;
+			bottom: 0px;
+			text-align: center;
+			color: rgb(255, 255, 255);
+			padding-bottom: 40px;
+		}
+
+		.exitclass {
+			display: block;
+			margin: auto auto 16px;
+			font-size: 24px;
+			padding: 10px 0px;
+			width: 80%;
+			border-radius: 48px;
+			background-color: rgb(254, 212, 38);
+			box-shadow: rgb(0 0 0 / 50%) 0px 2px 4px 0px;
+			border: 0px;
+			outline: none;
+		}
+		
+		
+	</style>
+</head>
+<script type="text/javascript" src="base64.js"></script>
+
+<script>
+function getCookie(cname){
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0; i<ca.length; i++) {
+		var c = ca[i].trim();
+		if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
+	}
+	return "";
+}
+
+function checkCookie(){
+	var user=getCookie("placeName");
+	var time=getCookie("checkInTime");
+	if (user!=""){
+		var hkenPlace = base64.decode(user);
+		document.getElementById("myPlace").innerHTML = hkenPlace;
+		document.getElementById("cookieDate").innerHTML = time;
+	}
+	else {
+		window.location.href = "scan.html";
+	}
+}
+function delCookie(){
+	var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
+	if(keys) {
+		for(var i = keys.length; i--;)
+			document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+	}
+	window.location.href = "index.html";
+
+}
+</script>
+</head>
+	
+<body onload="checkCookie()">
+<div class="content">
+<div class="youHvEnter">你已進入場所</div>
+<div id="myPlace" class="cookiePlace"></div>
+<div id="cookieDate" class="cookieDate"></div>
+<img src="image/tick.6d45b966.svg" class="ticktick">
+</div>
+
+
+<div class="footerDiv"><div class="subfooter">
+<div class="changeTick"><img src="image/checkbox.7f6c2da0.svg" class="textdis">1小時後自動離開</div><div class="changestatus">變更</div>
+</div>
+<button class="exitclass" onclick="delCookie()">離開</button>
+<div>當你離開時請緊記按"離開"</div>
+
+
+</body>
+	
+</html>
